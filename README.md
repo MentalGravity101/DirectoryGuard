@@ -23,9 +23,6 @@ Key Features
 3. Dual Interface: GUI and CLI
 GUI:
    Intuitive interface using ttkbootstrap for a modern look and feel.
-   Clearly grouped controls for starting, stopping, and managing monitored directories.
-   Labels that display currently monitored directories in real-time.
-   Features buttons for viewing logs, exporting/importing monitored directories, and stopping all monitoring.
 CLI:
 
 Comprehensive commands for:
@@ -39,10 +36,10 @@ Comprehensive commands for:
     Timestamp: Exact time of the event.
     Source: Whether the event involves a file or a directory.
     Path: Full path to the affected file or directory.
-      Change Type: Type of change (e.g., Created, Modified, Deleted, Moved).
-      Size Before/After: File size comparison for modification events.
-      Logs are stored in a database, ensuring durability and easy access.
-  Users can view logs via:
+    Change Type: Type of change (e.g., Created, Modified, Deleted, Moved).
+    Size Before/After: File size comparison for modification events.
+    Logs are stored in a database, ensuring durability and easy access.
+ Users can view logs via:
       GUI TreeView: Displays logs in a structured format with filtering and search options.
       CLI Commands: Output logs in a readable format or filter based on criteria like change type.
 
@@ -66,8 +63,7 @@ CLI:
      Filter logs by specific attributes (e.g., change_type=Modified).
 9. Directory Management
      Allows real-time addition and removal of monitored directories.
-     Displays a live list of all actively monitored directories in the GUI.
-     Prevents duplicate monitoring requests and ensures smooth operation.
+     Displays a live list of all actively monitored directories in the GUI..
 10. Log Cleanup
      Efficient cleanup of old logs to save disk space: Specify retention periods (e.g., delete logs older than 30 days).
-                                                       Available via both GUI and CLI.
+     Available via both GUI and CLI.
