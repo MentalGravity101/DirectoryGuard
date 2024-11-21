@@ -13,7 +13,6 @@ import sys
 DB_FILE = "file_monitor_logs.db"
 
 def initialize_database():
-    """Ensure database and table are created."""
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     cursor.execute("""
@@ -31,10 +30,8 @@ def initialize_database():
     conn.close()
 
 class FileChangeHandler(FileSystemEventHandler):
-    """Handles file system events and logs them to the database."""
 
     def log_event(self, event, change_type):
-        """Log an event to the database."""
         try:
             source = "Directory" if event.is_directory else "File"
             file_path = event.src_path
