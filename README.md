@@ -24,14 +24,13 @@ Key Features
 GUI:
    Intuitive interface using ttkbootstrap for a modern look and feel.
 CLI:
-
 Comprehensive commands for:
    Starting directory monitoring.
    Viewing or filtering logs.
    Cleaning up old logs based on retention periods.
    Useful for power users or integration with automated scripts.
 
-4. Logging and Event Management
+5. Logging and Event Management
   Captures detailed information about each event:
     Timestamp: Exact time of the event.
     Source: Whether the event involves a file or a directory.
@@ -44,11 +43,11 @@ Comprehensive commands for:
       CLI Commands: Output logs in a readable format or filter based on criteria like change type.
 
 
-5. Import/Export Functionality
+6. Import/Export Functionality
     Export Directories: Save the list of monitored directories to a file for backup or sharing.
     Import Directories: Load directories from a file and automatically add them to the active monitoring list.
                         Validates directory paths and avoids duplicates.
-6. Robust Error Handling
+7. Robust Error Handling
     Resilient to common issues like:
     Permission Errors: Handles restricted access gracefully without crashing.
     Threading Errors: Automatically resets the monitoring thread if stopped or interrupted.
