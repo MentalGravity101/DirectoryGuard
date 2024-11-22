@@ -74,7 +74,7 @@ class FileChangeHandler(FileSystemEventHandler):
         except Exception as e:
             print(f"Error handling moved event: {e}")
 
-# CLI Functions
+
 def monitor_path(path):
     """Monitors the given file or directory."""
     if not os.path.exists(path):
@@ -96,6 +96,7 @@ def monitor_path(path):
         observer.stop()
 
     observer.join()
+
 
 def display_log(filter_by=None, value=None):
     """Displays the logged changes with optional filters."""
@@ -128,7 +129,6 @@ def display_log(filter_by=None, value=None):
         print("-" * 40)
 
 def cleanup_logs(older_than_days):
-    """Cleans up logs older than the specified number of days."""
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     threshold_time = time.time() - (older_than_days * 86400)
@@ -138,7 +138,6 @@ def cleanup_logs(older_than_days):
     conn.close()
     print(f"Logs older than {older_than_days} days have been deleted.")
 
-# GUI Classes
 class FileMonitorApp(ttk.Window):
     def __init__(self):
         super().__init__(themename="superhero")
@@ -152,7 +151,6 @@ class FileMonitorApp(ttk.Window):
         self.create_widgets()
 
     def create_widgets(self):
-        # Section 1: Directory Monitoring Controls
         monitor_frame = ttk.Labelframe(self, text="Directory Monitoring", padding=10)
         monitor_frame.pack(fill=X, padx=10, pady=10)
 
@@ -164,20 +162,18 @@ class FileMonitorApp(ttk.Window):
         ttk.Button(monitor_frame, text="Start Monitoring", command=self.start_monitoring, bootstyle="success").pack(side=LEFT, padx=5, pady=5)
         ttk.Button(monitor_frame, text="Stop Monitoring", command=self.stop_monitoring, bootstyle="danger").pack(side=LEFT, padx=5, pady=5)
 
-        # Section 2: File Operations
         file_ops_frame = ttk.Labelframe(self, text="File Operations", padding=10)
         file_ops_frame.pack(fill=X, padx=10, pady=10)
 
         ttk.Button(file_ops_frame, text="Export Directories List", command=self.export_directories, bootstyle="warning").pack(side=LEFT, padx=5, pady=5)
         ttk.Button(file_ops_frame, text="Import Directories List", command=self.import_directories, bootstyle="primary").pack(side=LEFT, padx=5, pady=5)
 
-        # Section 3: Logs
         logs_frame = ttk.Labelframe(self, text="Logs", padding=10)
         logs_frame.pack(fill=X, padx=10, pady=10)
 
         ttk.Button(logs_frame, text="View Logs", command=self.open_logs_window, bootstyle="info").pack(side=LEFT, padx=5, pady=5)
 
-        # Section 4: Currently Monitored Directories
+    
         status_frame = ttk.Labelframe(self, text="Currently Monitored Directories", padding=10)
         status_frame.pack(fill=BOTH, expand=True, padx=10, pady=10)
 
@@ -191,27 +187,22 @@ class FileMonitorApp(ttk.Window):
             self.monitor_path_entry.insert(0, path)
 
     def start_monitoring(self):
-        """Start monitoring a directory."""
         path = self.monitor_path_entry.get()
         if not os.path.exists(path):
             messagebox.showerror("Error", f"Path '{path}' does not exist.")
             return
 
-        # Check if the directory is already being monitored
+        
         if path in self.monitored_directories:
             messagebox.showinfo("Already Monitoring", f"The directory '{path}' is already being monitored.")
             return
 
         try:
-            # Start monitoring the new directory
             event_handler = FileChangeHandler()
             self.observer.schedule(event_handler, path, recursive=True)
             self.monitored_directories.append(path)
-
-            # Update monitored directories label
             self.update_monitored_label()
 
-            # Start the observer if not already running
             if not self.observer.is_alive():
                 self.observer.start()
 
@@ -229,19 +220,15 @@ class FileMonitorApp(ttk.Window):
             messagebox.showerror("Error", f"An unexpected error occurred: {e}")
 
     def stop_monitoring(self):
-        """Stop monitoring all directories."""
         if not self.monitored_directories:
             messagebox.showinfo("Nothing to Stop", "No directories are currently being monitored.")
             return
 
         try:
-            # Stop all monitoring and clear the list
             self.observer.stop()
             self.observer.join()
-            self.observer = Observer()  # Recreate the observer for future use
+            self.observer = Observer() 
             self.monitored_directories = []
-
-            # Update monitored directories label
             self.update_monitored_label()
 
             messagebox.showinfo("Monitoring", "Stopped monitoring all directories.")
@@ -249,7 +236,6 @@ class FileMonitorApp(ttk.Window):
             messagebox.showerror("Error", f"An error occurred while stopping monitoring: {e}")
 
     def export_directories(self):
-        """Export the list of monitored directories to a file."""
         if not self.monitored_directories:
             messagebox.showinfo("Export Failed", "No directories to export.")
             return
@@ -268,7 +254,6 @@ class FileMonitorApp(ttk.Window):
                 messagebox.showerror("Export Failed", f"An error occurred: {e}")
 
     def import_directories(self):
-        """Import directories from a file and start monitoring them."""
         file_path = filedialog.askopenfilename(
             title="Import Directories",
             filetypes=(("Text Files", "*.txt"), ("All Files", "*.*"))
@@ -288,18 +273,15 @@ class FileMonitorApp(ttk.Window):
                 if path in self.monitored_directories:
                     messagebox.showinfo("Already Monitoring", f"The directory '{path}' is already being monitored.")
                     continue
-
-                # Start monitoring the new directory
+ 
                 event_handler = FileChangeHandler()
                 self.observer.schedule(event_handler, path, recursive=True)
                 new_directories.append(path)
 
             self.monitored_directories.extend(new_directories)
 
-            # Update monitored directories label
             self.update_monitored_label()
 
-            # Start the observer if not already running
             if new_directories and not self.observer.is_alive():
                 self.observer.start()
 
@@ -311,7 +293,6 @@ class FileMonitorApp(ttk.Window):
             messagebox.showerror("Import Failed", f"An error occurred: {e}")
 
     def update_monitored_label(self):
-        """Update the label showing the currently monitored directories."""
         if not self.monitored_directories:
             self.monitored_label.config(text="None")
         else:
@@ -326,22 +307,17 @@ class LogsWindow(Toplevel):
     def __init__(self, parent):
         super().__init__(parent)
         self.title("View Logs")
-        # Make the window fullscreen at load
         try:
-            # On Windows and Linux
             self.state("zoomed")
         except:
-            # On macOS, set fullscreen using screen resolution
             screen_width = self.winfo_screenwidth()
             screen_height = self.winfo_screenheight()
             self.geometry(f"{screen_width}x{screen_height}")
 
-        # Define a custom style to center text in the Treeview
         style = ttk.Style()
         style.configure("Treeview", rowheight=25)  # Adjust row height for better visibility
         style.configure("Treeview.Heading", anchor=CENTER)  # Center column headings
 
-        # Search bar frame
         search_frame = ttk.Frame(self, padding=10)
         search_frame.pack(fill=X, pady=10)
 
@@ -354,10 +330,8 @@ class LogsWindow(Toplevel):
         tree_frame = ttk.Frame(self, padding=10)
         tree_frame.pack(fill=BOTH, expand=True, pady=10)
 
-        # Vertical scrollbar
         y_scrollbar = ttk.Scrollbar(tree_frame, orient=VERTICAL)
 
-        # Treeview
         self.tree = ttk.Treeview(
             tree_frame,
             columns=("Timestamp", "Source", "Path", "Change Type", "Size Before", "Size After"),
@@ -365,7 +339,6 @@ class LogsWindow(Toplevel):
             yscrollcommand=y_scrollbar.set,
         )
 
-        # Configure column headings with centering
         self.tree.heading("Timestamp", text="Timestamp", anchor=CENTER)
         self.tree.heading("Source", text="Source", anchor=CENTER)
         self.tree.heading("Path", text="Path", anchor=CENTER)
@@ -373,7 +346,6 @@ class LogsWindow(Toplevel):
         self.tree.heading("Size Before", text="Size Before", anchor=CENTER)
         self.tree.heading("Size After", text="Size After", anchor=CENTER)
 
-        # Configure columns with centering
         self.tree.column("Timestamp", anchor=CENTER, width=150)
         self.tree.column("Source", anchor=CENTER, width=100)
         self.tree.column("Path", anchor=CENTER, width=300)
@@ -389,7 +361,6 @@ class LogsWindow(Toplevel):
         self.load_logs()
 
     def load_logs(self):
-        """Load all logs into the Treeview."""
         self.tree.delete(*self.tree.get_children())
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
@@ -401,7 +372,6 @@ class LogsWindow(Toplevel):
             self.tree.insert("", END, values=row[1:])  # Exclude ID from display
 
     def search_logs(self):
-        """Search logs based on the search query."""
         query = self.search_entry.get().strip()
 
         self.tree.delete(*self.tree.get_children())
